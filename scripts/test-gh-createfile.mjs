@@ -17,20 +17,12 @@ async function main() {
   console.log('Available tools:', tools)
 
   // Test the create_repository tool
-  const createRepoResult = await client.invokeTool('create_repository', {
+  const createRepoResult = await client.callTool('create_repository', {
     name: 'test-repo-' + Date.now(),
     description: 'A test repository created via MCP',
     private: false,
   })
   console.log('Create repository result:', createRepoResult)
-
-  // Test the get_file_contents tool
-  const fileContentsResult = await client.callTool('get_file_contents', {
-    owner: 'husamahmud',
-    repo: 'test',
-    path: 'README.md',
-  })
-  console.log('File contents result:', fileContentsResult)
 
   await transport.close()
 }
