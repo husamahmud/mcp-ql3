@@ -7,6 +7,7 @@ const REPO = 'mcp-ql3'
 
 async function main() {
   const transport = new SSEClientTransport(new URL(`${ORIGIN}/sse`))
+  transport.on('send', (data) => console.log('Sending:', JSON.stringify(data)))
   const client = new Client(
     { name: 'example-client', version: '1.0.0' },
     { capabilities: { prompts: {}, resources: {}, tools: {} } },
