@@ -25,6 +25,14 @@ async function main() {
   })
   console.log('Create repo result:', repoResult)
 
+  const createFileResult = await client.callTool('create_or_update_file', {
+    owner: OWNER,
+    repo: REPO,
+    path: 'README.md',
+    content: 'This is a test file',
+  })
+  console.log('Create file result:', createFileResult)
+
   // Test get_file_contents
   const fileResult = await client.callTool('get_file_contents', {
     owner: OWNER,
