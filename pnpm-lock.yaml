@@ -7,7 +7,7 @@ settings:
 dependencies:
   '@modelcontextprotocol/sdk':
     specifier: ^1.6.1
-    version: 1.6.1
+    version: 1.7.0
   content-type:
     specifier: ^1.0.5
     version: 1.0.5
@@ -28,8 +28,8 @@ devDependencies:
 
 packages:
 
-  /@modelcontextprotocol/sdk@1.6.1:
-    resolution: {integrity: sha512-oxzMzYCkZHMntzuyerehK3fV6A2Kwh5BD6CGEJSVDU2QNEhfLOptf2X7esQgaHZXHZY0oHmMsOtIDLP71UJXgA==}
+  /@modelcontextprotocol/sdk@1.7.0:
+    resolution: {integrity: sha512-IYPe/FLpvF3IZrd/f5p5ffmWhMc3aEMuM2wGJASDqC2Ge7qatVCdbfPx3n/5xFeb19xN0j/911M2AaFuircsWA==}
     engines: {node: '>=18'}
     dependencies:
       content-type: 1.0.5
