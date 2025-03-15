@@ -12,50 +12,51 @@ const handler = initializeMcpApiHandler(
     const githubConfig = {
       personalAccessToken: process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string,
     }
+    console.log('Loading @modelcontextprotocol/server-github:', require('@modelcontextprotocol/server-github'))
     if (!githubConfig.personalAccessToken) {
       throw new Error('GITHUB_PERSONAL_ACCESS_TOKEN is not set')
     }
     registerGithubTools(server, githubConfig)
 
-    server.tool(
-      'create_repository',
-      {
-        name: z.string().describe('The name of the repository'),
-        description: z.string().optional().describe('The description of the repository'),
-        private: z.boolean().optional().default(false).describe('Whether the repository is private'),
-      },
-      async ({ name, description, private: isPrivate }) => {
-        const token = process.env.GITHUB_PERSONAL_ACCESS_TOKEN
-        if (!token) {
-          throw new Error('GITHUB_PERSONAL_ACCESS_TOKEN is not set')
-        }
-
-        const response = await fetch('https://api.github.com/user/repos', {
-          method: 'POST',
-          headers: {
-            Authorization: `token ${token}`,
-            Accept: 'application/vnd.github+json',
-          },
-          body: JSON.stringify({
-            name,
-            description,
-            private: isPrivate,
-          }),
-        })
-
-        if (!response.ok) {
-          throw new Error(`Failed to create repository: ${response.statusText}`)
-        }
-
-        const data = await response.json()
-        return {
-          content: [{
-            type: 'text',
-            text: `Repository created: ${data.html_url}`,
-          }],
-        }
-      },
-    )
+    // server.tool(
+    //   'create_repository',
+    //   {
+    //     name: z.string().describe('The name of the repository'),
+    //     description: z.string().optional().describe('The description of the repository'),
+    //     private: z.boolean().optional().default(false).describe('Whether the repository is private'),
+    //   },
+    //   async ({ name, description, private: isPrivate }) => {
+    //     const token = process.env.GITHUB_PERSONAL_ACCESS_TOKEN
+    //     if (!token) {
+    //       throw new Error('GITHUB_PERSONAL_ACCESS_TOKEN is not set')
+    //     }
+    //
+    //     const response = await fetch('https://api.github.com/user/repos', {
+    //       method: 'POST',
+    //       headers: {
+    //         Authorization: `token ${token}`,
+    //         Accept: 'application/vnd.github+json',
+    //       },
+    //       body: JSON.stringify({
+    //         name,
+    //         description,
+    //         private: isPrivate,
+    //       }),
+    //     })
+    //
+    //     if (!response.ok) {
+    //       throw new Error(`Failed to create repository: ${response.statusText}`)
+    //     }
+    //
+    //     const data = await response.json()
+    //     return {
+    //       content: [{
+    //         type: 'text',
+    //         text: `Repository created: ${data.html_url}`,
+    //       }],
+    //     }
+    //   },
+    // )
   },
   {
     capabilities: {
