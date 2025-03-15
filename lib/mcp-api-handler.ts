@@ -9,29 +9,29 @@ import vercelJson from '../vercel.json'
 import { Readable } from 'node:stream'
 
 interface SerializedRequest {
-  requestId: string;
-  url: string;
-  method: string;
-  body: string;
-  headers: IncomingHttpHeaders;
+  requestId: string
+  url: string
+  method: string
+  body: string
+  headers: IncomingHttpHeaders
 }
 
 interface SerializedResponse {
-  status: number;
-  body: string;
+  status: number
+  body: string
 }
 
 interface LogEntry {
-  type: 'log' | 'error';
-  messages: string[];
+  type: 'log' | 'error'
+  messages: string[]
 }
 
 interface FakeIncomingMessageOptions {
-  method?: string;
-  url?: string;
-  headers?: IncomingHttpHeaders;
-  body?: string | Buffer | Record<string, any> | null;
-  socket?: Socket;
+  method?: string
+  url?: string
+  headers?: IncomingHttpHeaders
+  body?: string | Buffer | Record<string, any> | null
+  socket?: Socket
 }
 
 /**
@@ -42,7 +42,7 @@ interface FakeIncomingMessageOptions {
  */
 export function initializeMcpApiHandler(
   initializeServer: (server: McpServer) => void,
-  serverOptions: ServerOptions = {},
+  serverOptions: ServerOptions = {}
 ): (req: IncomingMessage, res: ServerResponse) => Promise<void> {
   const maxDuration: number = vercelJson?.functions?.['api/server.ts']?.maxDuration || 800
   const redisUrl: string = process.env.REDIS_URL || process.env.KV_URL || ''
@@ -62,20 +62,14 @@ export function initializeMcpApiHandler(
     console.error('Redis error', err)
   })
 
-  const redisPromise: Promise<unknown> = Promise.all([
-    redis.connect(),
-    redisPublisher.connect(),
-  ])
+  const redisPromise: Promise<unknown> = Promise.all([redis.connect(), redisPublisher.connect()])
 
   let servers: McpServer[] = []
 
   /**
    * Handler function for MCP API requests
    */
-  return async function mcpApiHandler(
-    req: IncomingMessage,
-    res: ServerResponse,
-  ): Promise<void> {
+  return async function mcpApiHandler(req: IncomingMessage, res: ServerResponse): Promise<void> {
     await redisPromise
     const url = new URL(req.url || '', 'https://example.com')
 
@@ -92,10 +86,7 @@ export function initializeMcpApiHandler(
   /**
    * Handle SSE connection requests
    */
-  async function handleSseRequest(
-    req: IncomingMessage,
-    res: ServerResponse,
-  ): Promise<void> {
+  async function handleSseRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
     console.log('Got new SSE connection')
 
     const transport = new SSEServerTransport('/message', res)
@@ -105,7 +96,7 @@ export function initializeMcpApiHandler(
         name: 'mcp-typescript server on vercel',
         version: '0.1.0',
       },
-      serverOptions,
+      serverOptions
     )
 
     initializeServer(server)
@@ -164,18 +155,15 @@ export function initializeMcpApiHandler(
         JSON.stringify({
           status,
           body,
-        } as SerializedResponse),
+        } as SerializedResponse)
       )
 
       if (status >= 200 && status < 300) {
-        logInContext(
-          'log',
-          `Request ${sessionId}:${request.requestId} succeeded: ${body}`,
-        )
+        logInContext('log', `Request ${sessionId}:${request.requestId} succeeded: ${body}`)
       } else {
         logInContext(
           'error',
-          `Message for ${sessionId}:${request.requestId} failed with status ${status}: ${body}`,
+          `Message for ${sessionId}:${request.requestId} failed with status ${status}: ${body}`
         )
       }
     }
@@ -195,9 +183,12 @@ export function initializeMcpApiHandler(
 
     const waitPromise = new Promise((resolve) => {
       resolveTimeout = resolve
-      timeout = setTimeout(() => {
-        resolve('max duration reached')
-      }, (maxDuration - 5) * 1000)
+      timeout = setTimeout(
+        () => {
+          resolve('max duration reached')
+        },
+        (maxDuration - 5) * 1000
+      )
     })
 
     /**
@@ -223,10 +214,7 @@ export function initializeMcpApiHandler(
   /**
    * Handle message requests
    */
-  async function handleMessageRequest(
-    req: IncomingMessage,
-    res: ServerResponse,
-  ): Promise<void> {
+  async function handleMessageRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
     console.log('Received message')
 
     const body = await getRawBody(req, {
@@ -234,7 +222,8 @@ export function initializeMcpApiHandler(
       encoding: 'utf-8',
     })
 
-    const sessionId = new URL(req.url || '', 'https://example.com').searchParams.get('sessionId') || ''
+    const sessionId =
+      new URL(req.url || '', 'https://example.com').searchParams.get('sessionId') || ''
     if (!sessionId) {
       res.statusCode = 400
       res.end('No sessionId provided')
@@ -251,21 +240,15 @@ export function initializeMcpApiHandler(
     }
 
     // Handle responses from the /sse endpoint
-    await redis.subscribe(
-      `responses:${sessionId}:${requestId}`,
-      (message: string) => {
-        clearTimeout(timeout)
-        const response = JSON.parse(message) as SerializedResponse
-        res.statusCode = response.status
-        res.end(response.body)
-      },
-    )
+    await redis.subscribe(`responses:${sessionId}:${requestId}`, (message: string) => {
+      clearTimeout(timeout)
+      const response = JSON.parse(message) as SerializedResponse
+      res.statusCode = response.status
+      res.end(response.body)
+    })
 
     // Queue the request in Redis
-    await redisPublisher.publish(
-      `requests:${sessionId}`,
-      JSON.stringify(serializedRequest),
-    )
+    await redisPublisher.publish(`requests:${sessionId}`, JSON.stringify(serializedRequest))
     console.log(`Published requests:${sessionId}`, serializedRequest)
 
     let timeout = setTimeout(async () => {
@@ -281,21 +264,12 @@ export function initializeMcpApiHandler(
   }
 }
 
-
 /**
  * Create a fake IncomingMessage for testing or simulation
  * Uses type assertion to properly handle event binding
  */
-function createFakeIncomingMessage(
-  options: FakeIncomingMessageOptions = {},
-): IncomingMessage {
-  const {
-    method = 'GET',
-    url = '/',
-    headers = {},
-    body = null,
-    socket = new Socket(),
-  } = options
+function createFakeIncomingMessage(options: FakeIncomingMessageOptions = {}): IncomingMessage {
+  const { method = 'GET', url = '/', headers = {}, body = null, socket = new Socket() } = options
 
   const readable = new Readable()
 
@@ -324,7 +298,7 @@ function createFakeIncomingMessage(
   const originalOnce = req.once.bind(req)
 
   // Override event methods to handle both IncomingMessage and Readable events
-  req.on = function(event: string, listener: (...args: any[]) => void): IncomingMessage {
+  req.on = function (event: string, listener: (...args: any[]) => void): IncomingMessage {
     if (['data', 'end', 'readable'].includes(event)) {
       readable.on(event, listener)
     }
@@ -332,7 +306,7 @@ function createFakeIncomingMessage(
     return req
   } as IncomingMessage['on']
 
-  req.once = function(event: string, listener: (...args: any[]) => void): IncomingMessage {
+  req.once = function (event: string, listener: (...args: any[]) => void): IncomingMessage {
     if (['data', 'end', 'readable'].includes(event)) {
       readable.once(event, listener)
     }
@@ -347,9 +321,12 @@ function createFakeIncomingMessage(
 
   // Make it pipe-able while maintaining IncomingMessage type
   const originalPipe = req.pipe.bind(req)
-  req.pipe = function <T extends NodeJS.WritableStream>(destination: T, options?: {
-    end?: boolean
-  }): T {
+  req.pipe = function <T extends NodeJS.WritableStream>(
+    destination: T,
+    options?: {
+      end?: boolean
+    }
+  ): T {
     readable.pipe(destination, options)
     return originalPipe(destination, options)
   }

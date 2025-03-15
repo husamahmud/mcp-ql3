@@ -7,7 +7,7 @@ async function main() {
   const transport = new SSEClientTransport(new URL(`${origin}/sse`))
   const client = new Client(
     { name: 'example-client', version: '1.0.0' },
-    { capabilities: { prompts: {}, resources: {}, tools: {} } },
+    { capabilities: { prompts: {}, resources: {}, tools: {} } }
   )
 
   await client.connect(transport)
