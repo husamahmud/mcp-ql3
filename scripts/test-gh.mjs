@@ -17,7 +17,7 @@ async function main() {
   console.log('Available tools:', await client.listTools())
 
   // Test create_repository
-  const repoResult = await client.invokeTool('create_repository', {
+  const repoResult = await client.callTool('create_repository', {
     name: 'test-repo-' + Date.now(),
     description: 'A test repo',
     private: false,
