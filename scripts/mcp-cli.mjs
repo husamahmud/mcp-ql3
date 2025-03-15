@@ -26,7 +26,7 @@ async function runCli() {
       break
     case 'echo':
       const message = args.join(' ') || 'Hello from CLI'
-      const result = await client.invokeTool('echo', { message })
+      const result = await client.callTool('echo', { message })
       console.log('Echo result:', JSON.stringify(result, null, 2))
       break
     default:
