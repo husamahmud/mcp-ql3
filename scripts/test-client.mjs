@@ -16,7 +16,7 @@ async function main() {
   const tools = await client.listTools()
   console.log('Available tools:', tools)
 
-  await client.disconnect()
+  console.log('Client methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(client)))
 }
 
 main().catch(console.error)
