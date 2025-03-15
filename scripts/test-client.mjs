@@ -16,7 +16,8 @@ async function main() {
   const tools = await client.listTools()
   console.log('Available tools:', tools)
 
-  console.log('Client methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(client)))
+  // console.log('Client methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(client)))
+  await transport.close()
 }
 
 main().catch(console.error)
