@@ -9,11 +9,5 @@
 		"api/server.ts": {
 			"maxDuration": 60
 		}
-	},
-	"builds": [
-		{
-			"src": "api/server.ts",
-			"use": "@vercel/node"
-		}
-	]
+	}
 }
