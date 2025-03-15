@@ -17,7 +17,7 @@ async function main() {
   console.log('Available tools:', tools)
 
   // Test the echo tool
-  const echoResult = await client.invokeTool('echo', { message: 'Hello from CLI' })
+  const echoResult = await client.callTool('echo', { message: 'Hello from CLI' })
   console.log('Echo result:', echoResult)
 
   await client.disconnect()
