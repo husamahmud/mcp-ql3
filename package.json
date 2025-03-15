@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"test": "node scripts/test-client.mjs https://mcp-ql3.vercel.app",
+		"test": "node scripts/test-client.mjs https://mcp-ql3.vercel.app"
 	},
 	"keywords": [],
 	"author": "",
