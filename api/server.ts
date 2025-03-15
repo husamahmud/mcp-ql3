@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { initializeMcpApiHandler } from '../lib/mcp-api-handler'
+import { registerGithubTools } from '@modelcontextprotocol/server-github'
 
 const handler = initializeMcpApiHandler(
   (server) => {
@@ -7,6 +8,15 @@ const handler = initializeMcpApiHandler(
     server.tool('echo', { message: z.string() }, async ({ message }) => ({
       content: [{ type: 'text', text: `Tool echo: ${message}` }],
     }))
+
+    const githubConfig = {
+      personalAccessToken: process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string,
+    }
+    if (!githubConfig.personalAccessToken) {
+      throw new Error('GITHUB_PERSONAL_ACCESS_TOKEN is not set')
+    }
+    registerGithubTools(server, githubConfig)
+
     server.tool(
       'create_repository',
       {
