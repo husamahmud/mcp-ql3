@@ -25,7 +25,7 @@ async function main() {
   console.log('Create repository result:', createRepoResult)
 
   // Test the get_file_contents tool
-  const fileContentsResult = await client.invokeTool('get_file_contents', {
+  const fileContentsResult = await client.callTool('get_file_contents', {
     owner: 'husamahmud',
     repo: 'test',
     path: 'README.md',
