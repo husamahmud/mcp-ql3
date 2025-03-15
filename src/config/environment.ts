@@ -1,27 +1,16 @@
-export const config = {
-  // GitHub configuration
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+export const environment = {
+  port: process.env.PORT || 3000,
   github: {
-    personalAccessToken: process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string,
+    token: process.env.GITHUB_TOKEN,
   },
-
-  // Redis configuration
   redis: {
-    url: process.env.REDIS_URL || '',
+    url: process.env.REDIS_URL || 'redis://localhost:6379',
   },
+  nodeEnv: process.env.NODE_ENV || 'development',
+} as const
 
-  // Server configuration
-  server: {
-    maxDuration: 55, // seconds (5s less than Vercel's limit to allow for cleanup)
-  },
-
-  // Validate required environment variables
-  validate(): void {
-    if (!this.github.personalAccessToken) {
-      throw new Error('GITHUB_PERSONAL_ACCESS_TOKEN is not set')
-    }
-
-    if (!this.redis.url) {
-      throw new Error('REDIS_URL or KV_URL environment variable is not set')
-    }
-  },
-}
+export type Environment = typeof environment;

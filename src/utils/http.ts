@@ -101,3 +101,40 @@ export async function parseRequestBody(req: IncomingMessage): Promise<string> {
     encoding: 'utf-8',
   })
 }
+
+export class HttpError extends Error {
+  constructor(
+    public statusCode: number,
+    message: string,
+    public details?: unknown
+  ) {
+    super(message);
+    this.name = 'HttpError';
+  }
+}
+
+export const createSuccessResponse = <T>(data: T) => ({
+  success: true,
+  data,
+});
+
+export const createErrorResponse = (error: Error | HttpError) => {
+  if (error instanceof HttpError) {
+    return {
+      success: false,
+      error: {
+        message: error.message,
+        statusCode: error.statusCode,
+        details: error.details,
+      },
+    };
+  }
+
+  return {
+    success: false,
+    error: {
+      message: error.message,
+      statusCode: 500,
+    },
+  };
+};

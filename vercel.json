@@ -1,13 +1,15 @@
 {
-	"rewrites": [
+	"version": 2,
+	"builds": [
 		{
-			"source": "/(.+)",
-			"destination": "/api/server"
+			"src": "api/**/*.ts",
+			"use": "@vercel/node"
 		}
 	],
-	"functions": {
-		"api/server.ts": {
-			"maxDuration": 60
+	"routes": [
+		{
+			"src": "/api/(.*)",
+			"dest": "/api/$1"
 		}
-	}
+	]
 }
