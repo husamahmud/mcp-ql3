@@ -5,7 +5,6 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "node scripts/test-client.mjs https://mcp-ql3.vercel.app",
-		"cli": "node scripts/mcp-cli.mjs"
 	},
 	"keywords": [],
 	"author": "",
