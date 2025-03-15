@@ -26,7 +26,7 @@ async function main() {
   console.log('Create repo result:', repoResult)
 
   // Test get_file_contents
-  const fileResult = await client.invokeTool('get_file_contents', {
+  const fileResult = await client.callTool('get_file_contents', {
     owner: OWNER,
     repo: REPO,
     path: 'README.md',
@@ -34,7 +34,7 @@ async function main() {
   console.log('File contents:', fileResult)
 
   // Test create_issue
-  const issueResult = await client.invokeTool('create_issue', {
+  const issueResult = await client.callTool('create_issue', {
     owner: OWNER,
     repo: REPO,
     title: 'Test Issue',
